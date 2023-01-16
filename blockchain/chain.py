@@ -41,7 +41,7 @@ class Block:
         hashData = str(self.index) + str(self.data) + self.timestamp + self.previousHash + str(self.nonce)
         return hashlib.sha256(hashData.encode('utf-8')).hexdigest()
 
-    def mineBlock(self, difficulty):
+    def mineBlock(self, difficulty, miner=""):
         """
             Method for Proof of Work
         """
@@ -51,8 +51,10 @@ class Block:
         while self.hash[:difficulty] != "0"*difficulty:
             self.nonce += 1
             self.hash = self.calculateHash()
-
+        self.data = dict()
+        self.data["transactions"] = [{"id": 0, "payer": "Block Reward", "beneficiary": miner, "amount": 50.0}]
         endTime = time.time()
+
         print(Back.BLUE + "[ Info ] Time Elapsed : " + str(endTime - startTime) + " seconds.")
         print(Back.BLUE + "[ Info ] Mined Hash : " + self.hash)
         print(Style.RESET_ALL)
@@ -75,15 +77,14 @@ class Blockchain:
         """
         return Block("Genesis Block")
 
-    def addBlock(self, newBlock):
+    def addBlock(self, newBlock, miner=""):
         """
             Method to add new block from Block class
         """
         newBlock.index = len(self.chain)
         newBlock.previousHash = self.chain[-1].hash
-        newBlock.mineBlock(self.difficulty)
+        newBlock.mineBlock(self.difficulty, miner)
         self.chain.append(newBlock)
-        self.writeBlocks()
 
     def concatBlock(self, newBlock):
         """

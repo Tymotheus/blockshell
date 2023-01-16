@@ -24,7 +24,10 @@ SUPPORTED_COMMANDS = [
     'allblocks',
     'getblock',
     'savechain',
-    'help'
+    'loadchain',
+    'help',
+    'quit',
+    'q',
 ]
 
 # Init blockchain
@@ -88,6 +91,7 @@ def processInput(cmd):
 # ==================================================
 # =========== BLOCKSHELL COMMAND METHODS ===========
 # ==================================================
+#@click.option("--miner", default="me")
 def dotx(cmd):
     """
         Do Transaction - Method to perform new transaction on blockchain.
@@ -96,7 +100,8 @@ def dotx(cmd):
     if "{" in txData:
         txData = json.loads(txData)
     print("Doing transaction...")
-    coin.addBlock(Block(data=txData))
+    miner = txData.split()[0]
+    coin.addBlock(Block(data=txData), miner=miner)
 
 
 def allblocks(cmd):
@@ -120,12 +125,19 @@ def getblock(cmd):
             print(eachBlock.__dict__)
             print("")
 
+
 def savechain(cmd):
     """
     Saves the blockchain into the chain.json file.
     This one might be redundant...?
     """
     coin.writeBlocks()
+
+
+def loadchain(cmd):
+    """Loads the Blockchain structure from file to create a Blockchain object."""
+    global coin
+    coin = Blockchain.readBlocks()
 
 
 def help(cmd):
@@ -136,6 +148,16 @@ def help(cmd):
     print("   dotx <transaction data>    Create new transaction")
     print("   allblocks                  Fetch all mined blocks in blockchain")
     print("   getblock <block hash>      Fetch information about particular block")
+    print("   savechain                  Saves the current blockchain into chain.json")
+    print("   loadchain                  Recreates the blockchain from chain.json file")
+
+
+def quit(cmd):
+    exit()
+
+
+def q(cmd):
+    exit()
 
 
 def throwError(msg):
