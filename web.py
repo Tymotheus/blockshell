@@ -27,7 +27,7 @@ def mined_blocks():
     """
         Endpoint to list all mined blocks.
     """
-    f = open("chain.txt", "r")
+    f = open("chain.json", "r")
     data = json.loads(f.read())
     f.close()
     return render_template('blocks.html', data=data)
@@ -37,7 +37,7 @@ def block(hash):
     """
         Endpoint which shows all the data for given block hash.
     """
-    f = open("chain.txt", "r")
+    f = open("chain.json", "r")
     data = json.loads(f.read())
     f.close()
     for eachBlock in data:

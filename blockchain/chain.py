@@ -26,13 +26,13 @@ class Block:
     """
         Create a new block in chain with metadata
     """
-    def __init__(self, data, index=0):
+    def __init__(self, data, index=0, previousHash="", timestamp="", nonce=0, hash=""):
         self.index = index
-        self.previousHash = ""
+        self.previousHash = previousHash
         self.data = data
-        self.timestamp = str(datetime.datetime.now())
+        self.timestamp = str(datetime.datetime.now()) if len(timestamp) == 0 else timestamp
         self.nonce = 0
-        self.hash = self.calculateHash()
+        self.hash = self.calculateHash() if len(hash) == 0 else hash
 
     def calculateHash(self):
         """
@@ -65,8 +65,8 @@ class Blockchain:
     """
         Initialize blockchain
     """
-    def __init__(self):
-        self.chain = [self.createGenesisBlock()]
+    def __init__(self, chain=[]):
+        self.chain = [self.createGenesisBlock()] if len(chain) == 0 else chain
         self.difficulty = 3
 
     def createGenesisBlock(self):
@@ -85,13 +85,26 @@ class Blockchain:
         self.chain.append(newBlock)
         self.writeBlocks()
 
+    def concatBlock(self, newBlock):
+        """
+        Method for concatanation of Blocks from file
+        """
+        self.chain.append(newBlock)
+
+
     def writeBlocks(self):
         """
             Method to write new mined block to blockchain
         """
-        dataFile = open("chain.txt", "w")
+        dataFile = open("chain.json", "w")
         chainData = []
         for eachBlock in self.chain:
             chainData.append(eachBlock.__dict__)
         dataFile.write(json.dumps(chainData, indent=4))
         dataFile.close()
+
+    @classmethod
+    def readBlocks(self):
+        input = json.loads(open("chain.json", "r").read())
+        return Blockchain([Block(**block) for block in input])
+

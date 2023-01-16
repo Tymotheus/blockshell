@@ -23,6 +23,7 @@ SUPPORTED_COMMANDS = [
     'dotx',
     'allblocks',
     'getblock',
+    'savechain',
     'help'
 ]
 
@@ -118,6 +119,13 @@ def getblock(cmd):
             print("")
             print(eachBlock.__dict__)
             print("")
+
+def savechain(cmd):
+    """
+    Saves the blockchain into the chain.json file.
+    This one might be redundant...?
+    """
+    coin.writeBlocks()
 
 
 def help(cmd):
