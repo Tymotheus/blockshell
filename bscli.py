@@ -97,11 +97,20 @@ def dotx(cmd):
         Do Transaction - Method to perform new transaction on blockchain.
     """
     txData = cmd.split("dotx ")[-1]
+    # this one I probably can delete later, I don't like it
     if "{" in txData:
         txData = json.loads(txData)
+    # this one will need rewriting later for more pythonic
+    txData = txData.split()
+    amount = beneficiary = None
+    for i in txData:
+        if i.startswith("amount="):
+            amount = float(i.strip("amount="))
+        if i.startswith("beneficiary="):
+            beneficiary = i.strip("beneficiary=")
     print("Doing transaction...")
-    miner = txData.split()[0]
-    coin.addBlock(Block(data=txData), miner=miner)
+    miner = txData[0]
+    coin.addBlock(Block(data=txData), miner=miner, beneficiary=beneficiary, amount=amount)
 
 
 def allblocks(cmd):

@@ -25,9 +25,37 @@ About defining the users in the network:
 "Users remain pseudonymous - linked through their cryptographic keys.
 Pseudonym is H(PK), which can be used to transfer coins (through digital signature)"
 
+23.01.2023
+Next goal - execute the transactions.
+PoW - only miner can execute the transactions to simplify the process.
+In the real bitcoin blockchain, address of a user is hash of his private key.
+I was thinking how I can simply encode it, my first idea was to use IP of the machine.
+But it is not a good solution because of lots of reasons, so I decided to just pass as argument 
+your id while mining so you will be assigned reward.
 
+How to code other transaction than reward now?
+PoW - you pass additional address while mining together with amount so it can get transfered in this block.
+Problem: nothing stops you from using someone else's address as a payer XD
+Possible solution: you hold your secret.
 
+I updated the mining function so it now calculates hash of the passed argument (miner)
+instead of saving it in the plain text.
 
+I added transfer system:
+1 transaction per block, miner has to execute transaction miner needs to pass private key (presumably his)
+so its hash gets calculated, beneficiary hash and amount.
+Problem: double spending
+
+Planned development:
+- Verifying transactions so there is no double spending
+- Include multiple transactions per block - miner can get transactions, save them in file transaction.json,
+then read them and include in the block
+- Introduce fees per transactions: easy stuff
+- Introduce merkel root hash calculation - one function which is later on added to the string, based on which block hash is calculated
+- Adding real public/private keys, storing them in secret .yaml files or env_vars
+
+Later on:
+- Adding multiple recievers and multiple payers for one transaction
 
 Questions to the prof:
 1. Why in electrum testnet transactions I received have multiple outputs?
@@ -38,3 +66,9 @@ There is no beneficiary, payer nor amount of transaction. Transaction is between
 when it can focus on calculating the puzzle? Block reward is much higher than fees + you do not receive fees if you don't manage to find the puzzle solution...
 
 Add some simple unit tests.
+
+Materials:
+Ethereum testnet - so you can test your own solidity contract:
+https://kovan.etherscan.io/
+IDE for smart contracts and ethereum:
+https://remix.ethereum.org/
